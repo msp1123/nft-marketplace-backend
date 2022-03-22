@@ -1,14 +1,14 @@
 {
-  "name": "fomo-launchpad-backend",
+  "name": "nft-marketplace-backend",
   "version": "0.0.1",
-  "description": "Backend code for Fomo launchpad app.",
+  "description": "Backend code for NFT Marketplace app.",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "Logesh R",
+  "author": "Praveen",
   "license": "MIT",
   "dependencies": {
     "amqplib": "^0.8.0",
