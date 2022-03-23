@@ -1,15 +1,13 @@
 
-function to(promise) {
-    return new Promise(function (resolve, reject) {
+async function to(promise) {
+    return await
         promise
             .then(data => {
-                resolve([null, data])
-            }).catch(err =>
-                reject([err])
-            );
-    })
+                return [null, data]
+            }).catch(err => {
+                return [err]
+            });
 }
-module.exports.to = to
 
 const ReS = (res, data) => {
 

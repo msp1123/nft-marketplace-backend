@@ -421,6 +421,7 @@ const getUser = async function (req, res) {
     let userId = req.params.id;
 
     if (isNull(userId) || isEmpty(userId)) return ReF(res, "User Id")
+    
     if (!ObjectId.isValid(userId)) return ReE(res, {
         message: "Enter a valid User Id"
     }, HttpStatus.BAD_GATEWAY)
