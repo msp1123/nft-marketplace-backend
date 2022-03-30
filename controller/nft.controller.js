@@ -13,7 +13,7 @@ const getNft = async function (req, res) {
 
     let user = req.user;
     let nftId = req.params.id;
-    let userId req.user._id;
+    let userId = req.user._id;
 
     if (isNull(nftId)) return ReF(res, "Nft Id")
 
@@ -61,7 +61,10 @@ const getNft = async function (req, res) {
         nft.isLiked = false;
     }
 
-    return ReS(res, {result: nft})
+    return ReS(res, {
+        message: "NFT Found",
+        nft: nft
+    })
 }
 module.exports.getNft = getNft
 
@@ -141,7 +144,10 @@ const getAllNFT = async function (req, res) {
             })
         );
     }
-    return ReS(res, {nfts: nfts})
+    return ReS(res, {
+        message: "NFTs Found",
+        nfts: nfts
+    })
 }
 
 module.exports.getAllNFT = getAllNFT

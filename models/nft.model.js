@@ -98,6 +98,9 @@ const NftSchema = new mongoose.Schema({
         type: Number,
         default: 5
     },
+    isLiked: {
+        type: Boolean
+    }
 }, {
     timestamps: true
 });

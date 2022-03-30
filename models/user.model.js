@@ -63,6 +63,20 @@ const UserSchema = new mongoose.Schema({
     private: {
         type: Boolean,
         default: false
+    },
+    social: {
+        type: Array,
+        schema: [{
+            type: Object,
+            schema: {
+                type: {
+                    type: String
+                },
+                userName: {
+                    type: String
+                },
+            }
+        }]
     }
 }, {
     timestamps: true
