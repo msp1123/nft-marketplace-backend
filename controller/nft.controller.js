@@ -2,7 +2,7 @@ const ObjectId = require('mongoose').Types.ObjectId
 const HttpStatus = require('http-status')
 
 const {isNull, isEmpty} = require('../utils/validations')
-const {to, ReE, ReS, ReF} = require('../services/response.services')
+const {to, ReE, ReS, ReF} = require('../utils/response')
 const Nft = require('../models/nft.model')
 const Users = require('../models/user.model');
 const Likes = require('../models/likes.model')

@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const pe = require('parse-error')
 const models = require('./models')
+const services = require('./services/network.service')
 
 const PORT = process.env.PORT || 3200
 const app = express()

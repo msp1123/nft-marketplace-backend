@@ -6,7 +6,7 @@ const HttpStatus = require('http-status')
 
 const {signJWT} = require('../utils/jwt.auth')
 const {isNull, isEmpty} = require('../utils/validations')
-const {to, ReE, ReS, ReF} = require('../services/response.services')
+const {to, ReE, ReS, ReF} = require('../utils/response')
 const {sendVerificationEmail} = require('../services/nodemailer')
 const {getPasswordHash, comparePassword} = require('../utils/validations')
 

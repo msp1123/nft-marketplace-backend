@@ -6,6 +6,16 @@
                     "internalType": "address",
                     "name": "_nftContractAddress",
                     "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "_feeAddress",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_platformCommission",
+                    "type": "uint256"
                 }
             ],
             "stateMutability": "nonpayable",
@@ -47,25 +57,75 @@
             "anonymous": false,
             "inputs": [
                 {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "tokenId",
-                    "type": "uint256"
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "role",
+                    "type": "bytes32"
                 },
                 {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "tokenPrice",
-                    "type": "uint256"
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "previousAdminRole",
+                    "type": "bytes32"
                 },
                 {
-                    "indexed": false,
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "newAdminRole",
+                    "type": "bytes32"
+                }
+            ],
+            "name": "RoleAdminChanged",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "role",
+                    "type": "bytes32"
+                },
+                {
+                    "indexed": true,
                     "internalType": "address",
-                    "name": "newOwner",
+                    "name": "account",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "sender",
                     "type": "address"
                 }
             ],
-            "name": "TokenSold",
+            "name": "RoleGranted",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "role",
+                    "type": "bytes32"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "sender",
+                    "type": "address"
+                }
+            ],
+            "name": "RoleRevoked",
             "type": "event"
         },
         {
@@ -73,24 +133,118 @@
             "inputs": [
                 {
                     "indexed": false,
+                    "internalType": "uint256",
+                    "name": "tokenId",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
                     "internalType": "address",
-                    "name": "from",
+                    "name": "buyer",
                     "type": "address"
                 },
                 {
                     "indexed": false,
                     "internalType": "address",
-                    "name": "to",
+                    "name": "seller",
                     "type": "address"
                 },
                 {
                     "indexed": false,
                     "internalType": "uint256",
-                    "name": "tokenId",
+                    "name": "price",
                     "type": "uint256"
                 }
             ],
-            "name": "TransferAsset",
+            "name": "TokenBought",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "tokenId",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "owner",
+                    "type": "address"
+                }
+            ],
+            "name": "TokenBurnt",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "tokenId",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "owner",
+                    "type": "address"
+                }
+            ],
+            "name": "TokenCreated",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "tokenId",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "owner",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "price",
+                    "type": "uint256"
+                }
+            ],
+            "name": "TokenOnSale",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "tokenId",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "owner",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "price",
+                    "type": "uint256"
+                }
+            ],
+            "name": "TokenPriceUpdated",
             "type": "event"
         },
         {
@@ -107,6 +261,32 @@
             "type": "event"
         },
         {
+            "inputs": [],
+            "name": "DEFAULT_ADMIN_ROLE",
+            "outputs": [
+                {
+                    "internalType": "bytes32",
+                    "name": "",
+                    "type": "bytes32"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "MARKET_ADMIN_ROLE",
+            "outputs": [
+                {
+                    "internalType": "bytes32",
+                    "name": "",
+                    "type": "bytes32"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -118,27 +298,27 @@
             "outputs": [
                 {
                     "internalType": "uint256",
-                    "name": "TokenId",
+                    "name": "tokenId",
                     "type": "uint256"
                 },
                 {
                     "internalType": "uint256",
-                    "name": "Price",
+                    "name": "price",
                     "type": "uint256"
                 },
                 {
                     "internalType": "address",
-                    "name": "Owner",
+                    "name": "owner",
                     "type": "address"
                 },
                 {
                     "internalType": "address",
-                    "name": "Creator",
+                    "name": "creator",
                     "type": "address"
                 },
                 {
                     "internalType": "uint256",
-                    "name": "Royalty",
+                    "name": "royalty",
                     "type": "uint256"
                 }
             ],
@@ -153,9 +333,9 @@
                     "type": "uint256"
                 }
             ],
-            "name": "buyNFT",
+            "name": "burnToken",
             "outputs": [],
-            "stateMutability": "payable",
+            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -166,13 +346,33 @@
                     "type": "uint256"
                 }
             ],
-            "name": "getAsset",
-            "outputs": [
+            "name": "buyToken",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
                 {
                     "internalType": "uint256",
-                    "name": "",
+                    "name": "_tokenId",
                     "type": "uint256"
                 },
+                {
+                    "internalType": "uint256",
+                    "name": "_tokenPrice",
+                    "type": "uint256"
+                }
+            ],
+            "name": "createSale",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "feeAddress",
+            "outputs": [
                 {
                     "internalType": "address",
                     "name": "",
@@ -204,6 +404,114 @@
         {
             "inputs": [
                 {
+                    "internalType": "bytes32",
+                    "name": "role",
+                    "type": "bytes32"
+                }
+            ],
+            "name": "getRoleAdmin",
+            "outputs": [
+                {
+                    "internalType": "bytes32",
+                    "name": "",
+                    "type": "bytes32"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "bytes32",
+                    "name": "role",
+                    "type": "bytes32"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "index",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getRoleMember",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "bytes32",
+                    "name": "role",
+                    "type": "bytes32"
+                }
+            ],
+            "name": "getRoleMemberCount",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "_tokenId",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getToken",
+            "outputs": [
+                {
+                    "components": [
+                        {
+                            "internalType": "uint256",
+                            "name": "tokenId",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "price",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "owner",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "creator",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "royalty",
+                            "type": "uint256"
+                        }
+                    ],
+                    "internalType": "struct Market721.Asset",
+                    "name": "",
+                    "type": "tuple"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
                     "internalType": "uint256",
                     "name": "_tokenId",
                     "type": "uint256"
@@ -212,9 +520,92 @@
             "name": "getTokenPrice",
             "outputs": [
                 {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                },
+                {
                     "internalType": "uint256",
                     "name": "",
                     "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "bytes32",
+                    "name": "role",
+                    "type": "bytes32"
+                },
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "grantRole",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "bytes32",
+                    "name": "role",
+                    "type": "bytes32"
+                },
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "hasRole",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "_tokenId",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_royalty",
+                    "type": "uint256"
+                }
+            ],
+            "name": "mintToken",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "nftContractAddress",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
                 }
             ],
             "stateMutability": "view",
@@ -256,22 +647,35 @@
         {
             "inputs": [
                 {
-                    "internalType": "uint256",
-                    "name": "_tokenId",
-                    "type": "uint256"
+                    "internalType": "bytes32",
+                    "name": "role",
+                    "type": "bytes32"
                 },
                 {
-                    "internalType": "uint256",
-                    "name": "_price",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "royalty",
-                    "type": "uint256"
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
                 }
             ],
-            "name": "safeMintAsset",
+            "name": "renounceRole",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "bytes32",
+                    "name": "role",
+                    "type": "bytes32"
+                },
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "revokeRole",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -280,37 +684,32 @@
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "to",
+                    "name": "_feeAddress",
                     "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "tokenId",
-                    "type": "uint256"
                 }
             ],
-            "name": "safeTransferAsset",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "success",
-                    "type": "bool"
-                }
-            ],
+            "name": "setFeeAddress",
+            "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
         },
         {
             "inputs": [
                 {
-                    "internalType": "address payable",
-                    "name": "_to",
-                    "type": "address"
+                    "internalType": "bytes4",
+                    "name": "interfaceId",
+                    "type": "bytes4"
                 }
             ],
-            "name": "sendViaTransfer",
-            "outputs": [],
-            "stateMutability": "payable",
+            "name": "supportsInterface",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -329,24 +728,36 @@
         {
             "inputs": [
                 {
+                    "internalType": "address",
+                    "name": "_to",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_tokenId",
+                    "type": "uint256"
+                }
+            ],
+            "name": "transferToken",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
                     "internalType": "uint256",
                     "name": "_tokenId",
                     "type": "uint256"
                 },
                 {
                     "internalType": "uint256",
-                    "name": "newPrice",
+                    "name": "_tokenPrice",
                     "type": "uint256"
                 }
             ],
-            "name": "updatePrice",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "success",
-                    "type": "bool"
-                }
-            ],
+            "name": "updateTokenPrice",
+            "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
         }

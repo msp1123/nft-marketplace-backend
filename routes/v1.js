@@ -19,7 +19,7 @@ router.post('/user/resetpassword', UserController.resetPassword)
 router.post('/user/update', needsAuth, UserController.updateUser)
 
 //contract routes
-router.post('/mint', needsAuth, ContractController.mint);
+router.post('/mint', needsAuth, ContractController.createNft);
 router.post('/putonsale', needsAuth, ContractController.putOnSale);
 router.post('/buy', needsAuth, ContractController.buyNft);
 router.post('/updateprice', needsAuth, ContractController.updatePrice);

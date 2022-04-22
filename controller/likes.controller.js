@@ -7,7 +7,7 @@ const ObjectId = require('mongoose').Types.ObjectId
 const HttpStatus = require('http-status')
 const appConfigs = require('../configs/app.config')
 const {isNull, isEmpty} = require('../utils/validations')
-const {to, ReE, ReS, ReF} = require('../services/response.services')
+const {to, ReE, ReS, ReF} = require('../utils/response')
 
 const likeNft = async function (req, res) {
     

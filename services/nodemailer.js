@@ -36,3 +36,28 @@ const sendVerificationEmail = async function (to, code) {
 }
 
 module.exports.sendVerificationEmail = sendVerificationEmail;
+
+const sendErrorReport = async function (subject, text) {
+    let options = {
+        from: CONFIG.mail_email_id,
+        to: CONFIG.report_receiver,
+        subject: subject,
+        text: text
+    }
+    
+    let info;
+    try {
+        info = await transporter.sendMail(options);
+    } catch (error) {
+        console.log("Send mail error:", error);
+        return false;
+    }
+
+    if (info.accepted.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+module.exports.sendErrorReport = sendErrorReport;
