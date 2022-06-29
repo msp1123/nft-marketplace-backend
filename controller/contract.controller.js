@@ -1,26 +1,23 @@
-const AWS = require('aws-sdk');
 const {ethers, utils} = require("ethers");
 const { logger } = require('../configs/winston.config')
 const ObjectId = require('mongoose').Types.ObjectId
 const HttpStatus = require('http-status')
-const {isNull, isEmpty} = require('../utils/validations')
-const {to, ReE, ReS, ReF} = require('../utils/response')
 const Nft = require('../models/nft.model');
 const Activity = require('../models/activity.model');
+
+const Nft721Json = require('../json/NftContract721.json')
+const Nft1155Json = require('../json/NftContract1155.json')
+const MarketContractJson = require('../json/TokenMarket.json');
+
 const CONFIG = require('../configs/global.configs');
-
-const Nft721Json = require('../json/Nft721.json')
-const Nft1155Json = require('../json/Nft1155.json')
-const Market721Json = require('../json/Market721.json')
-const Market1155Json = require('../json/Market1155.json');
+const {to, ReE, ReS, ReF} = require('../utils/response')
+const {isNull, isEmpty} = require('../utils/validations')
 const { sendErrorReport } = require('../services/nodemailer');
-const provider = new ethers.providers.InfuraProvider(CONFIG.network,
-    CONFIG.infura_key)
 
-const s3bucket = new AWS.S3({
-    accessKeyId: CONFIG.access_key,
-    secretAccessKey: CONFIG.secret_key
-});
+const provider = new ethers.providers.InfuraProvider(
+    CONFIG.network,
+    CONFIG.infura_key
+);
 
 const createNft = async (req, res) => {
 
