@@ -269,14 +269,16 @@ const login = async function (req, res) {
     }
 
     if (CONFIG.verify_email === 'true' && !user.emailVerified) {
-        return ReE(res, {
-            message: "User not verified. please verify your email and try again."
-        }, HttpStatus.INTERNAL_SERVER_ERROR)
+        return ReS(res, {
+            message: "Email not verified. please verify your email and try again.",
+            emailVerified: false
+        })
     }
 
     let authToken = await signJWT(user._id);
     return ReS(res, {
         message: "Logged in successfully",
+        emailVerified: true,
         email: user.email,
         address: user.address,
         token: authToken
