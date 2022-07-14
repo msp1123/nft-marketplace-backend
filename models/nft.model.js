@@ -17,6 +17,11 @@ const NftSchema = new mongoose.Schema({
         enum: ['COMMON', 'RARE', 'LEGENDARY_RARE', 'ULTRA_RARE'],
         default: "COMMON"
     },
+    assetType: {
+        type: String,
+        enum: ['ERC-721', 'ERC-1155'],
+        required: true
+    },
     userId: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
@@ -75,10 +80,6 @@ const NftSchema = new mongoose.Schema({
     chainName: {
         type: String,
         default: "Ethereum"
-    },
-    assetType: {
-        type: String,
-        required: true
     },
     marketAddress: {
         type: String,

@@ -1,51 +1,45 @@
-const AWS = require('aws-sdk');
 const {ethers, utils} = require("ethers");
 const { logger } = require('../configs/winston.config')
 const ObjectId = require('mongoose').Types.ObjectId
 const HttpStatus = require('http-status')
-const {isNull, isEmpty} = require('../utils/validations')
-const {to, ReE, ReS, ReF} = require('../utils/response')
 const Nft = require('../models/nft.model');
 const Activity = require('../models/activity.model');
+
+const Nft721Json = require('../json/NftContract721.json')
+const Nft1155Json = require('../json/NftContract1155.json')
+const MarketContractJson = require('../json/TokenMarket.json');
+
 const CONFIG = require('../configs/global.configs');
-
-const Nft721Json = require('../json/Nft721.json')
-const Nft1155Json = require('../json/Nft1155.json')
-const Market721Json = require('../json/Market721.json')
-const Market1155Json = require('../json/Market1155.json');
+const {to, ReE, ReS, ReF} = require('../utils/response')
+const {isNull, isEmpty} = require('../utils/validations')
 const { sendErrorReport } = require('../services/nodemailer');
-const provider = new ethers.providers.InfuraProvider(CONFIG.network,
-    CONFIG.infura_key)
 
-const s3bucket = new AWS.S3({
-    accessKeyId: CONFIG.access_key,
-    secretAccessKey: CONFIG.secret_key
-});
+const provider = new ethers.providers.InfuraProvider(
+    CONFIG.network,
+    CONFIG.infura_key
+);
 
 const createNft = async (req, res) => {
 
     let err, nft, activity;
     let body = req.body;
     let user = req.user;
-    let tokenId = Math.floor(1000000000 + Math.random() * 9000000000);
 
     if (isNull(body.title)) return ReF(res, 'Title')
-    if (isNull(body.description)) return ReF(res, 'Description')
+    if (isNull(body.txHash)) return ReF(res, 'TxHash')
+    if (isNull(body.tokenId)) return ReF(res, 'Token Id')
     if (isNull(body.totalSupply)) return ReF(res, 'Supply')
-    if (isNull(body.attachments[0].url)) return ReF(res, 'Image')
-    if (isNull(body.txHash)){
-        if(isNull(body.privateKey)) return ReF(res, 'Privatekey')
-    }
-    if (isNull(body.attachments) || isEmpty(body.attachments)) {
-        return ReF(res, 'Attachments')
-    }
+    if (isNull(body.attachments[0].url)) return ReF(res, 'File')
+    if (isNull(body.description)) return ReF(res, 'Description')
+    if (isNull(body.assetType)) return ReF(res, 'Token standard')
+    if (isNull(body.attachments[0].fileType)) return ReF(res, 'File type')
 
     if (body.totalSupply <= 0) {
         return ReE(res, {
             message: 'Please enter a valid supply for token'
         }, HttpStatus.BAD_REQUEST)
     }
-    if (body.royalty > 10) {
+    if (body.royalty <= 10) {
         return ReE(res, {
             message: 'Royalty can not be upto 10%'
         }, HttpStatus.BAD_REQUEST)
@@ -53,40 +47,21 @@ const createNft = async (req, res) => {
 
     var input = {
         userId: user._id,
-        tokenId: tokenId,
         title: body.title,
-        tokenPrice: 0,
         txHash: body.txHash,
-        royalty: body.royalty || 5,
+        royalty: body.royalty,
+        tokenId: body.tokenId,
+        assetType: body.assetType,
+        chainName: body.chainName,
         popularity: body.popularity,
         description: body.description,
         attachments: body.attachments,
         totalSupply: body.totalSupply,
         previewImage: body.attachments[0].url,
-        chainName: body.chainName || 'Ethereum',
-        assetType: body.totalSupply > 1 ? 'ERC-1155' : 'ERC-721',
-        nftAddress: body.totalSupply > 1 ?
-            CONFIG.nft_contract_1155 : CONFIG.nft_contract_721,
-        marketAddress: body.totalSupply > 1 ?
-            CONFIG.market_contract_1155 : CONFIG.market_contract_721
+        marketAddress: CONFIG.market_contract_address,
+        nftAddress: body.assetType === "ERC-721" ?
+            CONFIG.nft_contract_address_721 : CONFIG.nft_contract_address_1155,
     };
-
-    if(isNull(body.txHash)){
-
-        let type = body.totalSupply = 1 ? 1 : 2;
-
-        let txHash = await mint(
-            type, body.privateKey, tokenId, 
-            body.royalty, body.totalSupply
-        );
-        if(txHash){
-            input.txHash = txHash;
-        }else{
-            return ReE(res, {
-                message: 'Unexpected chain error. Please contact support'
-            }, HttpStatus.INTERNAL_SERVER_ERROR)
-        }
-    }
 
     [err, nft] = await to(Nft.create(input));
     if (err) {
@@ -100,8 +75,8 @@ const createNft = async (req, res) => {
         nftId: nft._id,
         userId: user._id,
         amount: input.totalSupply,
-        assetType: input.totalSupply > 1 ? 'ERC-1155' : 'ERC-721',
-        tokenId: tokenId,
+        assetType: input.assetType,
+        tokenId: input.tokenId,
         txHash: input.txHash
     };
 
