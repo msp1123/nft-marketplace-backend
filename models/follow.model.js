@@ -26,4 +26,4 @@ const FollowSchema = new mongoose.Schema({
 
 FollowSchema.plugin(mongoosePaginate)
 
-const Follows = module.exports =  mongoose.model('Follow', FollowSchema);
+const Follows = module.exports = mongoose.model('Follow', FollowSchema, 'follows');

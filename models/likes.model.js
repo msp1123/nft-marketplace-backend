@@ -2,10 +2,10 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const mongoosePaginate = require('mongoose-paginate-v2')
 
-const LikesSchema = new mongoose.Schema({
-    nftId: {
+const TokenLikesSchema = new mongoose.Schema({
+    token: {
         type: mongoose.Schema.ObjectId,
-        ref: 'Nft',
+        ref: 'Token',
         required: true
     },
     userId: {
@@ -25,6 +25,6 @@ const LikesSchema = new mongoose.Schema({
     timestamps: true
 });
 
-LikesSchema.plugin(mongoosePaginate)
+TokenLikesSchema.plugin(mongoosePaginate)
 
-const Likes = module.exports = mongoose.model('NftLike', LikesSchema);
+const TokenLikes = module.exports = mongoose.model('TokenLikes', TokenLikesSchema, 'likes');

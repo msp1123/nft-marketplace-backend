@@ -34,7 +34,6 @@ const sendVerificationEmail = async function (to, code) {
         return false;
     }
 }
-
 module.exports.sendVerificationEmail = sendVerificationEmail;
 
 const sendErrorReport = async function (subject, text) {
@@ -59,5 +58,4 @@ const sendErrorReport = async function (subject, text) {
         return false;
     }
 }
-
 module.exports.sendErrorReport = sendErrorReport;

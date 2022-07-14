@@ -2,10 +2,10 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const mongoosePaginate = require('mongoose-paginate-v2')
 
-const CommentsSchema = new mongoose.Schema({
-    nftId: {
+const TokenCommentsSchema = new mongoose.Schema({
+    token: {
         type: mongoose.Schema.ObjectId,
-        ref: 'Nft',
+        ref: 'Token',
         required: true
     },
     userId: {
@@ -25,6 +25,6 @@ const CommentsSchema = new mongoose.Schema({
     timestamps: true
 });
 
-CommentsSchema.plugin(mongoosePaginate)
+TokenCommentsSchema.plugin(mongoosePaginate)
 
-const Comments = module.exports = mongoose.model('NftComment', CommentsSchema);
+const TokenComments = module.exports = mongoose.model('TokenComments', TokenCommentsSchema, 'tokencomments');

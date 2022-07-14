@@ -1,5 +1,5 @@
-const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, json } = format;
+const {createLogger, format, transports} = require('winston');
+const {combine, timestamp, json} = format;
 const logger = createLogger({
     format: format.json(),
     format: combine(
@@ -14,7 +14,7 @@ const logger = createLogger({
             level: 'error',
             json: true,
             maxsize: 5242880, // 5MB
-           }),
+        }),
         new transports.File({
             filename: 'logs/combined.log',
             json: true,

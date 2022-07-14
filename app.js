@@ -1,22 +1,22 @@
-const express = require('express')
+const cors = require('cors')
 const logger = require('morgan')
+const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-const cors = require('cors')
-const pe = require('parse-error')
+
 const models = require('./models')
 const CONFIG = require('./configs/global.configs')
 
-const PORT = CONFIG.api_port
 const app = express()
+const PORT = CONFIG.api_port
 
-app.use(logger('combined'))
 app.use(cors())
 app.use(bodyParser.json())
+app.use(logger('combined'))
 
 app.get('/', (req, res) => {
     return res.json({
-        message: 'Hello! Welcome to Metadata API.',
+        message: 'Hello! Welcome to NFT Marketplace API.',
     })
 })
 

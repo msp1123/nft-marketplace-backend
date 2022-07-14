@@ -2,6 +2,7 @@ const CONFIG = require('../config/global.configs')
 const {to} = require('./util.service')
 const amqp = require('amqplib')
 
+// RabbitMq channel initializer
 const getChannel = async (queueName, dlxName) => {
     
     let err, conn;

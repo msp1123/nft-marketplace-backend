@@ -1,24 +1,16 @@
 const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate-v2')
 
-const TokenSchema = new mongoose.Schema({
+const CollectionSchema = new mongoose.Schema({
     active: {
         type: Boolean,
         default: true
-    },
-    tokenId: {
-        type: Number,
-        required: true
     },
     chainId: {
         type: Number,
         required: true
     },
     address: {
-        type: String,
-        required: true
-    },
-    owner: {
         type: String,
         required: true
     },
@@ -34,24 +26,17 @@ const TokenSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    animation_url: {
-        type: String
-    },
     external_url: {
         type: String
     },
-    attributes: [
-        {
-            trait_type: {
-                type: String
-            },
-            value: {
-                type: String
-            }
-        }
-    ]
+    seller_fee_basis_points: {
+        type: String
+    },
+    fee_recipient: {
+        type: String
+    },
 }, {timestamps: true})
 
-TokenSchema.plugin(mongoosePaginate)
+CollectionSchema.plugin(mongoosePaginate)
 
-let Token = module.exports = mongoose.model('Token', TokenSchema, 'tokens')
+let Collection = module.exports = mongoose.model('Collection', CollectionSchema, 'collections')
