@@ -31,24 +31,33 @@ async function to(promise) {
 // used to return success response
 const ReS = (res, data) => {
 
-    res.statusCode = 200;
-    return res.json({
-        success: true,
-        result: data
-    })
+    let output = {success: true}
+    
+    if (typeof data == 'object') {
+        output = Object.assign(data, output)//merge the objects
+    }
+    res.statusCode = 200
+    return res.json(output)
 };
 
 // used to return failure response
 const ReE = (res, data, code) => {
+    
+    let output = {success: false}
+    
+    if (typeof data == 'object') {
+        output = Object.assign(data, output)//merge the objects
+    }
 
     typeof code !== 'undefined'
         ? res.statusCode = code
-        : res.statusCode = 400;
+        : res.statusCode = 400
+        
+    if(typeof data === 'undefined'){
+        output.message = 'Unknown error occured. Please contact support.'
+    }
 
-    return res.json({
-        success: false,
-        result: data
-    })
+    return res.json(output)
 };
 
 // used when a field is required on an API call

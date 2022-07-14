@@ -5,19 +5,20 @@ const mongoosePaginate = require('mongoose-paginate-v2')
 const UserSchema = new mongoose.Schema({
     active: {
         type: Boolean,
-        default: false
+        default: true
     },
     address: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     imageUrl: {
         type: String,
         default: "None"
     },
-    userName: {
+    name: {
         type: String,
-        default: "None"
+        unique: true
     },
     bio: {
         type: String
