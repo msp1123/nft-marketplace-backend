@@ -4,7 +4,7 @@ const CONFIG = require('../configs/global.configs')
 // The signJwt function is used to get a signed jwt token with the address 
 const signJWT = function (address) {
     let expiration = CONFIG.jwt_expiration
-    return 'Bearer ' + jwt.sign({address: address}, CONFIG.jwt_encryption)
+    return 'Bearer ' + jwt.sign({active: true, address: address}, CONFIG.jwt_encryption)
 }
 
 // used to check whether the array is empty or not
@@ -32,7 +32,7 @@ async function to(promise) {
 const ReS = (res, data) => {
 
     let output = {success: true}
-    
+
     if (typeof data == 'object') {
         output = Object.assign(data, output)//merge the objects
     }
@@ -42,9 +42,9 @@ const ReS = (res, data) => {
 
 // used to return failure response
 const ReE = (res, data, code) => {
-    
+
     let output = {success: false}
-    
+
     if (typeof data == 'object') {
         output = Object.assign(data, output)//merge the objects
     }
@@ -52,8 +52,8 @@ const ReE = (res, data, code) => {
     typeof code !== 'undefined'
         ? res.statusCode = code
         : res.statusCode = 400
-        
-    if(typeof data === 'undefined'){
+
+    if (typeof data === 'undefined') {
         output.message = 'Unknown error occured. Please contact support.'
     }
 

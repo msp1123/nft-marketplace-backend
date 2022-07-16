@@ -17,8 +17,7 @@ const UserSchema = new mongoose.Schema({
         default: "None"
     },
     name: {
-        type: String,
-        unique: true
+        type: String
     },
     bio: {
         type: String

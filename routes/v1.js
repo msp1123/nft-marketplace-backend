@@ -1,16 +1,17 @@
 const express = require('express');
-const passport = require('passport');
 
 const router = express.Router();
-const {verifyUser} = require('../middleware/passport');
-verifyUser(passport)
 
-const needsUserAuth = passport.authenticate('jwt', {session: false})
-
+const passport = require('passport')
+const needsAuth = passport.authenticate('jwt', {session: false})
+require('../middleware/user.passport')(passport)
 const UserController = require('../controller/user.controller')
 
 //user routes
+router.post('/user/login', UserController.login )
 router.get('/user/fetch/:id', UserController.getUser)
+router.put('/user/update', needsAuth, UserController.updateUser)
+router.get('/user/verifyName/:id', needsAuth, UserController.verifyName)
 
 router.use('/', (req, res, next) => {
     return res.json({

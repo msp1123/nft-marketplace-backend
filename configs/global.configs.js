@@ -32,4 +32,6 @@ CONFIG.report_receiver = process.env.REPORT_RECEIVER;
 CONFIG.verify_email = process.env.VERIFY_EMAIL || 'false';
 CONFIG.mail_service_provider = process.env.MAIL_SERVICE_PROVIDER;
 
+CONFIG.editableUserFields = ['name', 'imageUrl', 'bio', 'social']
+
 module.exports = CONFIG;
