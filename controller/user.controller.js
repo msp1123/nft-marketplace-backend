@@ -1,16 +1,16 @@
 const moment = require('moment')
 const {ethers} = require('ethers')
-const {v4: uuidv4} = require('uuid');
+const {v4: uuidv4} = require('uuid')
 const validator = require('validator')
 const HttpStatus = require('http-status')
-const CONFIG = require("../configs/global.configs");
+const CONFIG = require("../configs/global.configs")
 
 const {isAddress} = ethers.utils
 const {isEmail, isStrongPassword} = validator
 const ObjectId = require('mongoose').Types.ObjectId
 
 const {User} = require('../models')
-const {isEmpty, isNull, ReE, ReS, ReF, to, signJWT} = require('../services/utils.service');
+const {isEmpty, isNull, ReE, ReS, ReF, to, signJWT} = require('../services/utils.service')
 
 //global constants
 const regexp = /^[a-zA-Z0-9-_]+$/;

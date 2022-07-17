@@ -70,8 +70,13 @@ const ReF = (res, field) => {
     })
 };
 
+const waitFor = delay => new Promise(
+    resolve => setTimeout(resolve, delay)
+)
+
 module.exports = {
     signJWT,
+    waitFor,
     isEmpty,
     isNull,
     ReE,

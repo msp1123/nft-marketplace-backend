@@ -40,6 +40,9 @@ const TokenSchema = new mongoose.Schema({
     external_url: {
         type: String
     },
+    txHash: {
+        type: String
+    },
     attributes: [
         {
             trait_type: {
