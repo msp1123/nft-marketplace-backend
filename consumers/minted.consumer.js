@@ -7,7 +7,7 @@ getChannel(CONFIG.mintedQueueName, 'dlx-' + CONFIG.mintedQueueName)
         startMintedEventConsum(ch)
     })
     .catch(e => {
-        logger.info(`Token Minted Event Consumer AMQP connection error: ${e}`)
+        logger.error(`#Mint Queue Consumer: AMQP connection error: ${e}`)
     })
 
 function startMintedEventConsum (channel) {
@@ -37,8 +37,8 @@ function startMintedEventConsum (channel) {
             await createTransferEvent(operator, from, to, tokenId, amount,
                 blockNumber, timestamp, chainId, txHash)
         } catch (e) {
-            logger.info(
-                `Transfer Consumer: Error creating transfer event, message rejected. ${msg.content.toString()} ${e}`)
+            logger.error(
+                `#Mint Queue Consumer: Message rejected. ${msg.content.toString()} ${e}`)
             channel.nack(msg, false, false) //false false to send to DLX
             return
         }

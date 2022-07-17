@@ -41,7 +41,8 @@ const TokenSchema = new mongoose.Schema({
         type: String
     },
     txHash: {
-        type: String
+        type: String,
+        unique: true
     },
     attributes: [
         {

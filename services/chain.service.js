@@ -7,12 +7,13 @@ const {
     pushMintEvent,
     pushListedEvent,
     pushBoughtEvent
-} = require('../controller/token.controller')
+} = require('../controller/queue.controller')
 const {
     updateSyncedBlock,
     getBlockIntervals,
     getLastUpdatedBlock
 } = require('../controller/block.controller')
+const {waitFor} = require('./utils.service')
 
 const provider = new ethers.providers.InfuraProvider(
     CONFIG.network,
@@ -82,7 +83,8 @@ const filterEvents = async function () {
     let fromBlock = processInfo.block
     let intervals = getBlockIntervals(processInfo.block, currentBlock, 10000)
     
-    intervals.map(async interval => {
+    let totalEvents
+    await Promise.all(intervals.map(async interval => {
         
         let fromBlock = interval.fromBlock
         let toBlock = interval.toBlock
@@ -98,7 +100,7 @@ const filterEvents = async function () {
             boughtEvents = await marketContract.queryFilter(
                 'TokenBought', fromBlock, toBlock)
         } catch (e) {
-            logger.info(`Filter Market Events failed at: ${currentDate.format()} with error: ${e}`)
+            logger.error(`#Filter event: Filter Market Events failed with error: ${e}`)
         }
         
         mintEvents.map(event => {
@@ -139,13 +141,15 @@ const filterEvents = async function () {
                 CONFIG.chain_id
             )
         })
-    })    
+        totalEvents = mintEvents.length +  listedEvents.length + boughtEvents.length
+    }))
     
     updateSyncedBlock('filter_market_events', currentBlock)
-    logger.info(`Filter Event run at: ${currentDate.format()}, from: ${fromBlock}, to: ${currentBlock})`)
+    logger.info(`#Filter event: Total events: ${totalEvents}, from: ${fromBlock}, to: ${currentBlock})`)
 }
 
 if(CONFIG.start_listener === 'true'){
+    console.log(`Events listener started`);
     startListener()
 }
 if(CONFIG.sync_market_events === 'true'){

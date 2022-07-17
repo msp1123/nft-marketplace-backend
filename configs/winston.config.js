@@ -10,13 +10,19 @@ const logger = createLogger({
     ),
     transports: [
         new transports.File({
-            filename: 'logs/error.log',
-            level: 'error',
+            filename: 'logs/combined.log',
             json: true,
-            maxsize: 5242880, // 5MB
+            maxsize: 5242880,
         }),
         new transports.File({
-            filename: 'logs/combined.log',
+            filename: 'logs/info.log',
+            level: 'info',
+            json: true,
+            maxsize: 5242880, 
+        }),
+        new transports.File({
+            filename: 'logs/error.log',
+            level: 'error',
             json: true,
             maxsize: 5242880,
         })

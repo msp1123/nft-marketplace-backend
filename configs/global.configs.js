@@ -20,7 +20,7 @@ CONFIG.alchemy_key = process.env.ALCHEMY_KEY || 'alchemy_key'
 
 CONFIG.nft_contract_address = process.env.NFT_CONTRACT_ADDRESS || '0x0'
 CONFIG.market_contract_address = process.env.MARKET_CONTRACT_ADDRESS || '0x0'
-CONFIG.market_contract_address = process.env.STORAGE_CONTRACT_ADDRESS || '0x0'
+CONFIG.storage_contract_address = process.env.STORAGE_CONTRACT_ADDRESS || '0x0'
 
 CONFIG.start_listener = process.env.START_LISTENER || 'false'
 CONFIG.sync_interval_mins = process.env.SYNC_INTERVAL_MINS || '30'

@@ -55,16 +55,14 @@ let boughtTokenChannel
 
 const mintEventChannel = async function() {
     if(mintedTokenChannel) {
-        console.log("1");
         return mintedTokenChannel
     }else{
-        console.log("2");
         try {
             mintedTokenChannel = await getChannel(
                 CONFIG.mintedQueueName, 'dlx-' + CONFIG.mintedQueueName);
             return mintedTokenChannel
         } catch (error) {
-            logger.info(`Token Minted Event AMQP connection error: ${e}`)
+            logger.info(`#Mint event channel: AMQP connection error: ${e}`)
             return
         }
     }
@@ -73,16 +71,14 @@ module.exports.mintEventChannel = mintEventChannel
 
 const listEventChannel = async function() {
     if(listedTokenChannel) {
-        console.log("1");
         return listedTokenChannel
     }else{
-        console.log("2");
         try {
             listedTokenChannel = await getChannel(
                 CONFIG.listedQueueName, 'dlx-' + CONFIG.listedQueueName);
             return listedTokenChannel
         } catch (error) {
-            logger.info(`Token Minted Event AMQP connection error: ${e}`)
+            logger.info(`#List event channel: AMQP connection error: ${e}`)
             return
         }
     }
@@ -91,16 +87,14 @@ module.exports.listEventChannel = listEventChannel
 
 const buyEventChannel = async function() {
     if(boughtTokenChannel) {
-        console.log("1");
         return boughtTokenChannel
     }else{
-        console.log("2");
         try {
             boughtTokenChannel = await getChannel(
                 CONFIG.boughtQueueName, 'dlx-' + CONFIG.boughtQueueName);
             return boughtTokenChannel
         } catch (error) {
-            logger.info(`Token Minted Event AMQP connection error: ${e}`)
+            logger.info(`#Buy event channel: AMQP connection error: ${e}`)
             return
         }
     }

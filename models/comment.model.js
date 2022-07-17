@@ -27,4 +27,4 @@ const TokenCommentsSchema = new mongoose.Schema({
 
 TokenCommentsSchema.plugin(mongoosePaginate)
 
-const TokenComments = module.exports = mongoose.model('TokenComments', TokenCommentsSchema, 'tokencomments');
+const TokenComments = module.exports = mongoose.model('TokenComments', TokenCommentsSchema, 'comments');
