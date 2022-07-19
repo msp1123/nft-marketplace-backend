@@ -74,6 +74,45 @@ exports.create = async function (req, res) {
     })
 }
 
+exports.getToken = async function (req, res) {
+    
+    let chainId = req.params.chainId;
+    let tokenId = req.params.tokenId;
+    let nftAddress = req.params.nftAddress;
+    
+    if(isNull(chainId)) return ReF(res, "Chain Id")
+    if(isNull(tokenId)) return ReF(res, "Token Id")
+    if(isNull(nftAddress)) return ReF(res, "NFT Address")
+    
+    let query = {
+        nftAddress: nftAddress,
+        chainId: chainId,
+        tokenId: tokenId
+    }
+    
+    let err, token;
+    [err, token] = await to(Token.findOne(query));
+    if(err) return ReE(res)
+    
+    if(!token){
+        return ReE(res, {
+            message: "Token not found"
+        }, HttpStatus.NOT_FOUND)
+    }
+    
+    let tokenModel = {
+        name: token.name,
+        image: token.image,
+        tokenId: token.tokenId,
+        attributes: token.attributes,
+        description: token.description,
+        external_url: token.external_url,
+        animation_url: token.animation_url,
+    };
+    
+    return ReS(res, tokenModel)
+}
+
 exports.getTokenId = async function (req, res) {
     
     let chainId = req.params.chainId;
