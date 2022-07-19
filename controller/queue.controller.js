@@ -57,11 +57,11 @@ exports.pushMintEvent = async (
 
     let message = JSON.stringify(event)
     channel.sendToQueue(CONFIG.mintedQueueName, Buffer.from(message))
-    console.log('[x] Mint event sent to queue with message %s', message)
+    logger.info('[x] Mint event sent to queue with message %s', message)
 }
 
 exports.pushListedEvent = async (
-    standard, nftAddress, tokenId, itemId, amount, price, txHash, chainId) => {
+    standard, nftAddress, tokenId, itemId, amount, price, owner, txHash, chainId) => {
 
     let event = {
         standard: parseInt(standard),
@@ -70,6 +70,7 @@ exports.pushListedEvent = async (
         itemId: parseInt(itemId),
         amount: parseInt(amount),
         price: parseFloat(price),
+        owner: owner,
         txHash: txHash,
         chainId: chainId
     }
@@ -84,7 +85,7 @@ exports.pushListedEvent = async (
     
     let message = JSON.stringify(event)
     channel.sendToQueue(CONFIG.listedQueueName, Buffer.from(message))
-    console.log('[x] Listed event sent to queue with message %s', message)
+    logger.info('[x] Listed event sent to queue with message %s', message)
 }
 
 exports.pushBoughtEvent = async (
@@ -113,5 +114,5 @@ exports.pushBoughtEvent = async (
     
     let message = JSON.stringify(event)
     channel.sendToQueue(CONFIG.boughtQueueName, Buffer.from(message))
-    console.log('[x] Bought event sent to queue with message %s', message)
+    logger.info('[x] Bought event sent to queue with message %s', message)
 }

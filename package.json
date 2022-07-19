@@ -6,7 +6,10 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "start:services": "node serviceApp.js",
-    "dev:services": "nodemon serviceApp.js"
+    "dev:services": "nodemon serviceApp.js",
+    "start:mintConsumer": "node consumers/minted.consumer.js",
+    "start:boughtConsumer": "node consumers/bought.consumer.js",
+    "start:listingConsumer": "node consumers/listed.consumer.js"
   },
   "keywords": [],
   "author": "Praveen",

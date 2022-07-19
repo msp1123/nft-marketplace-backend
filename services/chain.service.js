@@ -14,21 +14,7 @@ const {
     getLastUpdatedBlock
 } = require('../controller/block.controller')
 const {waitFor} = require('./utils.service')
-
-const provider = new ethers.providers.InfuraProvider(
-    CONFIG.network,
-    CONFIG.infura_key
-)
-
-provider.getBlockNumber().then((result) => {
-    console.log('Current block number: ' + result)
-})
-
-const marketContract = new ethers.Contract(
-    CONFIG.market_contract_address,
-    TokenMarketJson.abi,
-    provider
-)
+const {provider, marketContract} = require('./ethers.provider')
 
 const startListener = async function () {
     marketContract.on('TokenMinted',
@@ -44,7 +30,7 @@ const startListener = async function () {
         }
     );
     marketContract.on('TokenListed',
-        (standard, nftAddress, tokenId, itemId, amount, price, event) => {
+        (standard, nftAddress, tokenId, itemId, amount, price, owner, event) => {
             pushListedEvent(
                 standard,
                 nftAddress,
@@ -52,6 +38,7 @@ const startListener = async function () {
                 itemId,
                 amount,
                 price,
+                owner,
                 event.transactionHash,
                 CONFIG.chain_id
             )
@@ -115,7 +102,7 @@ const filterEvents = async function () {
             )
         })
         listedEvents.map(event => {
-            const {standard, nftAddress, tokenId, itemId, amount, price} = event.args
+            const {standard, nftAddress, tokenId, itemId, amount, owner, price} = event.args
             pushListedEvent(
                 standard,
                 nftAddress,
@@ -123,6 +110,7 @@ const filterEvents = async function () {
                 itemId,
                 amount,
                 price,
+                owner,
                 event.transactionHash,
                 CONFIG.chain_id
             )

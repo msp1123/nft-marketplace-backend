@@ -6,20 +6,28 @@ const TokenSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    tokenId: {
-        type: Number,
+    nftAddress: {
+        type: String,
         required: true
     },
     chainId: {
         type: Number,
         required: true
     },
-    address: {
+    tokenId: {
+        type: Number,
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
+    creator: {
         type: String,
         required: true
     },
-    owner: {
-        type: String,
+    royalty: {
+        type: Number,
         required: true
     },
     name: {
@@ -27,8 +35,7 @@ const TokenSchema = new mongoose.Schema({
         required: true
     },
     description: {
-        type: String,
-        required: true
+        type: String
     },
     image: {
         type: String,

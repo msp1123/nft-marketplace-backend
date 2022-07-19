@@ -1,46 +1,52 @@
 const {getChannel} = require('../services/queue.service')
 const {logger} = require('../configs/winston.config')
 const CONFIG = require('../configs/global.configs')
-const {minted} = require('../controller/token.controller')
+const {bought} = require('../controller/token.controller')
 
-getChannel(CONFIG.mintedQueueName, 'dlx-' + CONFIG.mintedQueueName)
+getChannel(CONFIG.boughtQueueName, 'dlx-' + CONFIG.boughtQueueName)
     .then(ch => {
-        startMintedEventConsumer(ch)
+        startVoughtEventConsumer(ch)
     })
     .catch(e => {
-        logger.error(`#Mint Queue Consumer: AMQP connection error: ${e}`)
+        logger.error(`#Buy Queue Consumer: AMQP connection error: ${e}`)
     })
 
-function startMintedEventConsumer(channel) {
+function startVoughtEventConsumer(channel) {
     
     channel.prefetch(1)
     
-    channel.consume(CONFIG.mintedQueueName, async function (msg) {
+    channel.consume(CONFIG.boughtQueueName, async function (msg) {
         
-        console.log('#Mint Event Message:', msg.content.toString())
-        let mintEvent = JSON.parse(msg.content)
+        console.log('#Buy Event Message:', msg.content.toString())
+        let buyEvent = JSON.parse(msg.content)
         
         const {
+            standard,
             nftAddress,
             tokenId,
+            itemId,
             amount,
+            price,
             owner,
             txHash,
             chainId
-        } = mintEvent
+        } = buyEvent
         
         try {
-            await minted(
+            await bought(
+                standard,
                 nftAddress,
                 tokenId,
+                itemId,
                 amount,
+                price,
                 owner,
                 txHash,
                 chainId
             );
         } catch (e) {
             logger.error(
-                `#Mint Queue Consumer: Message rejected. ${msg.content.toString()} ${e}`)
+                `#Buy Queue Consumer: Message rejected. ${msg.content.toString()} ${e}`)
             channel.nack(msg, false, false) //false false to send to DLX
             return
         }
