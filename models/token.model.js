@@ -6,6 +6,10 @@ const TokenSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    collectionName: {
+        type: String,
+        required: true
+    },
     nftAddress: {
         type: String,
         required: true
@@ -51,6 +55,9 @@ const TokenSchema = new mongoose.Schema({
         type: String,
         unique: true
     },
+    notifications: [{
+        type: String
+    }],
     attributes: [
         {
             trait_type: {

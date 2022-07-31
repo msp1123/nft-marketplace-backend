@@ -36,10 +36,16 @@ CONFIG.verify_email = process.env.VERIFY_EMAIL || 'false'
 CONFIG.mail_service_provider = process.env.MAIL_SERVICE_PROVIDER
 
 CONFIG.editableUserFields = ['name', 'imageUrl', 'bio', 'social']
+CONFIG.editableCollectionFields = ['name', 'description', 'image', 'category', 'external_url']
 CONFIG.defaultImage = "https://marketplace-nft.s3.us-west-1.amazonaws.com/contract/default.png"
 
 CONFIG.mintedQueueName = 'incoming-minted-events'
 CONFIG.listedQueueName = 'incoming-listed-events'
 CONFIG.boughtQueueName = 'incoming-bought-events'
+
+CONFIG.supportedNetworks = [
+    { chainId: 4, network: 'rinkeby', currency: 'ETH' },
+    { chainId: 80001, network: 'maticmum', currency: 'MATIC' }
+]
 
 module.exports = CONFIG;

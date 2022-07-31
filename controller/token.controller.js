@@ -10,7 +10,7 @@ const {isAddress} = ethers.utils
 const {isEmail, isStrongPassword} = validator
 const ObjectId = require('mongoose').Types.ObjectId
 
-const {User, Token, Activity} = require('../models')
+const {User, Token, Activity, Collection} = require('../models')
 const {isEmpty, isNull, ReE, ReS, ReF, to} = require('../services/utils.service')
 const {assetContract, marketContract} = require('../services/ethers.provider')
 
@@ -22,29 +22,43 @@ exports.create = async function (req, res) {
     let image = req.body.image;
     let amount = req.body.amount;
     let txHash = req.body.txHash;
-    let chainId = req.body.chainId;
     let tokenId = req.body.tokenId;
     let royalty = req.body.royalty || 0;
-    let attributes = req.body.attributes;
-    let nftAddress = req.body.nftAddress;
     let animation = req.body.animation_url;
     let description = req.body.description;
+    let collectionName = req.body.collectionName;
     
     if(isNull(name)) return ReF(res, "Name")
     if(isNull(image)) return ReF(res, "Image")
     if(isNull(amount)) return ReF(res, "Quantity")
-    if(isNull(chainId)) return ReF(res, "Chain Id")
     if(isNull(tokenId)) return ReF(res, "Token Id")
-    if(isNull(nftAddress)) return ReF(res, "NFT Address")
     if(isNull(txHash)) return ReF(res, "Transaction Hash")
+    if(isNull(collectionName)) return ReF(res, "Collection Name")
+    
+    let collectionQuery = {
+        active: true,
+        name: collectionName
+    }
+
+    let err, collection;
+    [err, collection] = await to(Collection.findOne(collectionQuery));
+    if(err) return ReE(res)
+    
+    if(!collection) return ReE(res, {
+        message: "Collection not found"
+    })
+
+    if(collection.owner !== user.address) return ReE(res, {
+        message: "You are not owner of this collection"
+    })
     
     let tokenQuery = {
-        chainId: chainId,
         tokenId: tokenId,
-        nftAddress: nftAddress
+        chainId: collection.chainId,
+        nftAddress: collection.address
     }
-    
-    let err, token;
+
+    let token;
     [err, token] = await to(Token.findOne(tokenQuery));
     if(err) return ReE(res)
     
@@ -53,17 +67,18 @@ exports.create = async function (req, res) {
     })
     
     let tokenInput = {
-        nftAddress: nftAddress,
-        chainId: chainId,
+        collectionName: collectionName,
+        nftAddress: collection.address,
+        chainId: collection.chainId,
+        description: description,
+        animation_url: animation,
         tokenId: tokenId,
-        amount: amount,
         creator: creator,
         royalty: royalty,
-        name: name,
-        description: description,
-        image: image,
-        animation_url: animation,
         txHash: txHash,
+        amount: amount,
+        image: image,
+        name: name,
     };
     
     [err, token] = await to(Token.create(tokenInput));
@@ -74,7 +89,7 @@ exports.create = async function (req, res) {
     })
 }
 
-exports.getToken = async function (req, res) {
+exports.getTokenMetadata = async function (req, res) {
     
     let chainId = req.params.chainId;
     let tokenId = req.params.tokenId;
@@ -83,6 +98,7 @@ exports.getToken = async function (req, res) {
     if(isNull(chainId)) return ReF(res, "Chain Id")
     if(isNull(tokenId)) return ReF(res, "Token Id")
     if(isNull(nftAddress)) return ReF(res, "NFT Address")
+    if(!isAddress(nftAddress)) return ReF(res, "Valid NFT Address")
     
     let query = {
         nftAddress: nftAddress,
@@ -120,6 +136,7 @@ exports.getTokenId = async function (req, res) {
     
     if(isNull(chainId)) return ReF(res, "Chain Id")
     if(isNull(nftAddress)) return ReF(res, "NFT Address")
+    if(!isAddress(nftAddress)) return ReF(res, "Valid NFT Address")
     
     let tokenId = Math.floor(Math.random() * 99999999999999999999);
     while(tokenId.toString().length != 20){
@@ -175,7 +192,7 @@ exports.minted = async function (
     if (!token) throw new Error(`#Mint consumer: Token not found: ${JSON.stringify(query)}`)
 
     let input = {
-        status: 'MINTED',
+        status: 'Minted',
         address: owner,
         nftAddress: nftAddress,
         chainId: chainId,
@@ -219,7 +236,7 @@ exports.listed = async function (
     if (!token) throw new Error(`#List consumer: Token not found: ${JSON.stringify(query)}`)
 
     let input = {
-        status: 'LISTED',
+        status: 'Listed',
         address: owner,
         standard: standard,
         nftAddress: nftAddress,
@@ -265,7 +282,7 @@ exports.bought = async function (
     if (!token) throw new Error(`#Buy consumer: Token not found: ${JSON.stringify(query)}`)
 
     let input = {
-        status: 'BOUGHT',
+        status: 'Bought',
         address: owner,
         standard: standard,
         nftAddress: nftAddress,
@@ -287,7 +304,7 @@ exports.bought = async function (
         chainId: chainId,
         tokenId: tokenId,
         itemId: itemId,
-        status: 'LISTED'
+        status: 'Listed'
     };
 
     [err, activity] = await to(Activity.findOne(activityQuery));
@@ -295,7 +312,7 @@ exports.bought = async function (
     
     if(!activity) throw new Error(`#Buy consumer: Activity not found ${JSON.stringify(activityQuery)}`)
     
-    activity.status = 'SOLD';
+    activity.status = 'Sold';
     [err, activity] = await to(activity.save())
     if (err) throw err
 

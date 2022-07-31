@@ -1,3 +1,4 @@
+const CONFIG = require('../configs/global.configs');
 const {User, Token, Block} = require('../models')
 const {isEmpty, isNull, ReE, ReS, ReF, to, signJWT} = require('../services/utils.service')
 
@@ -106,4 +107,8 @@ module.exports.getBlockIntervals = function (fromBlock, toBlock, intervalSize) {
         }
     }
     return results
+}
+
+exports.supportedNetworks = function (req, res) {
+    return ReS(res, CONFIG.supportedNetworks)
 }

@@ -9,8 +9,8 @@ const ActivitySchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['MINTED', 'LISTED', 'BOUGHT', 'TRANSFERD', 'UPDATED', 'SOLD'],
-        default: 'SUBMITTED'
+        enum: ['Minted', 'Listed', 'Bought', 'Transferred', 'Updated', 'Sold'],
+        default: 'Submitted'
     },
     address: {
         type: String,

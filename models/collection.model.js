@@ -14,22 +14,27 @@ const CollectionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    name: {
+    owner: {
         type: String,
         required: true
     },
-    description: {
+    category: {
         type: String,
-        required: true
+        enum: ["Collectibles", "Art", "Music", "Video"]
+    },
+    name: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    description: {
+        type: String
     },
     image: {
         type: String,
         required: true
     },
     external_url: {
-        type: String
-    },
-    seller_fee_basis_points: {
         type: String
     },
     fee_recipient: {
