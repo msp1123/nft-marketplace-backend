@@ -11,7 +11,7 @@ const {isEmail, isStrongPassword} = validator
 const ObjectId = require('mongoose').Types.ObjectId
 
 const {User, Token, Queue} = require('../models')
-const {mintEventChannel, listEventChannel, buyEventChannel} = require('../services/queue.service')
+const QueueService = require('../services/queue.service')
 const {isEmpty, isNull, ReE, ReS, ReF, to, signJWT, waitFor} = require('../services/utils.service')
 
 const insertToQueue = async function (txHash){
@@ -46,9 +46,9 @@ exports.pushMintEvent = async (
         chainId: chainId
     }
     
-    let channel = await mintEventChannel();
+    let channel = await QueueService.mintEventChannel;
     if(!channel){
-        logger.error(`#Mint event: Send to queue failed with: ${event}`)
+        logger.error(`#Mint event: Send to queue failed with: ${JSON.stringify(event)}`)
         return
     }
     
@@ -75,9 +75,9 @@ exports.pushListedEvent = async (
         chainId: chainId
     }
     
-    let channel = await listEventChannel();
+    let channel = await QueueService.listEventChannel;
     if(!channel){
-        logger.error(`#List event: Send to queue failed with: ${event}`)
+        logger.error(`#List event: Send to queue failed with: ${JSON.stringify(event)}`)
         return
     }
     let status = await insertToQueue(txHash)
@@ -103,9 +103,9 @@ exports.pushBoughtEvent = async (
         chainId: chainId
     }
     
-    let channel = await buyEventChannel();
+    let channel = await QueueService.buyEventChannel;
     if(!channel){
-        logger.error(`#Buy event: Send to queue failed with: ${event}`)
+        logger.error(`#Buy event: Send to queue failed with: ${JSON.stringify(event)}`)
         return
     }
 

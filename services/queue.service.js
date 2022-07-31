@@ -53,50 +53,29 @@ let mintedTokenChannel
 let listedTokenChannel
 let boughtTokenChannel
 
-const mintEventChannel = async function() {
-    if(mintedTokenChannel) {
-        return mintedTokenChannel
-    }else{
-        try {
-            mintedTokenChannel = await getChannel(
-                CONFIG.mintedQueueName, 'dlx-' + CONFIG.mintedQueueName);
-            return mintedTokenChannel
-        } catch (error) {
-            logger.info(`#Mint event channel: AMQP connection error: ${e}`)
-            return
-        }
-    }
-}
-module.exports.mintEventChannel = mintEventChannel
+getChannel(
+    CONFIG.mintedQueueName,
+    'dlx-' + CONFIG.mintedQueueName
+).then((channel) => {
+    exports.mintEventChannel = channel
+}).catch(err => {
+    logger.info(`#Mint event channel: AMQP connection error: ${err}`)
+})
 
-const listEventChannel = async function() {
-    if(listedTokenChannel) {
-        return listedTokenChannel
-    }else{
-        try {
-            listedTokenChannel = await getChannel(
-                CONFIG.listedQueueName, 'dlx-' + CONFIG.listedQueueName);
-            return listedTokenChannel
-        } catch (error) {
-            logger.info(`#List event channel: AMQP connection error: ${e}`)
-            return
-        }
-    }
-}
-module.exports.listEventChannel = listEventChannel
+getChannel(
+    CONFIG.listedQueueName,
+    'dlx-' + CONFIG.listedQueueName
+).then((channel) => {
+    exports.listEventChannel = channel
+}).catch(err => {
+    logger.info(`#List event channel: AMQP connection error: ${err}`)
+})
 
-const buyEventChannel = async function() {
-    if(boughtTokenChannel) {
-        return boughtTokenChannel
-    }else{
-        try {
-            boughtTokenChannel = await getChannel(
-                CONFIG.boughtQueueName, 'dlx-' + CONFIG.boughtQueueName);
-            return boughtTokenChannel
-        } catch (error) {
-            logger.info(`#Buy event channel: AMQP connection error: ${e}`)
-            return
-        }
-    }
-}
-module.exports.buyEventChannel = buyEventChannel
+getChannel(
+    CONFIG.boughtQueueName,
+    'dlx-' + CONFIG.boughtQueueName
+).then((channel) => {
+    exports.buyEventChannel = channel
+}).catch(err => {
+    logger.info(`#Buy event channel: AMQP connection error: ${err}`)
+})
