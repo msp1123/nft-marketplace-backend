@@ -101,7 +101,7 @@ exports.getTokenMetadata = async function (req, res) {
     if(isNull(nftAddress)) return ReF(res, "NFT Address")
     if(!isAddress(nftAddress)) return ReF(res, "Valid NFT Address")
     
-    if(tokenId.length >= 30){
+    if(tokenId.length > 20){
         tokenId = getDecimalTokenId(tokenId)
     }
     
@@ -146,9 +146,9 @@ exports.getTokenId = async function (req, res) {
     if(isNull(nftAddress)) return ReF(res, "NFT Address")
     if(!isAddress(nftAddress)) return ReF(res, "Valid NFT Address")
     
-    let tokenId = Math.floor(Math.random() * 99999999999999999999);
-    while(tokenId.toString().length != 20){
-        tokenId = Math.floor(Math.random() * 99999999999999999999);
+    let tokenId = Math.floor(1000000000 + Math.random() * 9000000000);
+    while(tokenId.toString().length != 10){
+        tokenId = Math.floor(1000000000 + Math.random() * 9000000000);
     }
     
     let query = {
@@ -162,10 +162,10 @@ exports.getTokenId = async function (req, res) {
     if(err) return ReE(res)
     
     while(token){
-        tokenId = Math.floor(Math.random() * 99999999999999999999);
+        tokenId = Math.floor(1000000000 + Math.random() * 9000000000);
         query.tokenId = tokenId;
-        while(tokenId.toString().length != 20){
-            tokenId = Math.floor(Math.random() * 99999999999999999999);
+        while(tokenId.toString().length != 10){
+            tokenId = Math.floor(1000000000 + Math.random() * 9000000000);
             query.tokenId = tokenId;
         }
         [err, token] = await to(Token.findOne(query));
