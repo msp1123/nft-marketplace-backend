@@ -8,7 +8,7 @@ CONFIG.service_port = process.env.SERVICE_PORT || '3400'
 
 CONFIG.access_key = process.env.AWS_ACCESSKEY || 'access_key'
 CONFIG.secret_key = process.env.AWS_SECRETKEY || 'secret_key'
-CONFIG.bucket_name = process.env.AWS_BUCKET_NAME || 'marketplace-nft'
+CONFIG.bucket_name = process.env.AWS_BUCKET_NAME || 'nft-market'
 
 CONFIG.rabbitmq_url = process.env.QUEUE_URL || 'http://localhost'
 CONFIG.db_uri = process.env.MONGODB_URI || 'mongodb://username:password@mlab.com:27017/db'
@@ -30,17 +30,18 @@ CONFIG.mintedQueueName = 'incoming-minted-events'
 CONFIG.listedQueueName = 'incoming-listed-events'
 CONFIG.boughtQueueName = 'incoming-bought-events'
 
+CONFIG.userPopulatable = '_id address imageUrl name bio followers followings popularity social'
 CONFIG.editableUserFields = ['name', 'imageUrl', 'bio', 'social']
 CONFIG.editableCollectionFields = ['name', 'description', 'image', 'category', 'external_url']
-CONFIG.defaultImage = "https://marketplace-nft.s3.us-west-1.amazonaws.com/contract/default.png"
+CONFIG.defaultImage = "https://nft-market.s3.us-west-1.amazonaws.com/contract/nft-main.png"
 
 CONFIG.supportedNetworks = [
     { 
         chainId: 4,
         network: 'rinkeby',
-        nftContractAddress: "0x5b969CD05Ab5bDcA3D810E84626403b79676f69e",
-        marketContractAddress: "0xB94f3B3e9E45502dF4B7FCAcF18f64D39C10B5b0",
-        storageContractAddress: "0xc17a9bb9836097abFC97d80bf208E539AB9fe33A",
+        nftContractAddress: "0x14367A449dEf50911166E47E312C898fe3Cc625d",
+        marketContractAddress: "0xE839c3faE3e9c5F1713A5B1d7ed1E208ff050448",
+        storageContractAddress: "0xA4f57C27a329A0cf16184B99aDaDFebA2aa87f30",
         rpcUrl: "https://rinkeby.infura.io/v3/d548afae3db6401695198727c33730d0",
     },
     {

@@ -10,8 +10,9 @@ const {isAddress} = ethers.utils
 const {isEmail, isStrongPassword} = validator
 const ObjectId = require('mongoose').Types.ObjectId
 
-const {User, Token, Activity, Collection} = require('../models')
-const {isEmpty, isNull, ReE, ReS, ReF, to} = require('../services/utils.service')
+const {getDecimalTokenId, isEmpty, isNull, 
+    ReE, ReS, ReF, to} = require('../services/utils.service')
+    const {User, Token, Activity, Collection} = require('../models')
 const {assetContract, marketContract} = require('../services/ethers.provider')
 
 exports.create = async function (req, res) {
@@ -100,8 +101,15 @@ exports.getTokenMetadata = async function (req, res) {
     if(isNull(nftAddress)) return ReF(res, "NFT Address")
     if(!isAddress(nftAddress)) return ReF(res, "Valid NFT Address")
     
+    if(tokenId.length >= 30){
+        tokenId = getDecimalTokenId(tokenId)
+    }
+    
     let query = {
-        nftAddress: nftAddress,
+        nftAddress: {
+            '$regex': `^${nftAddress}$`,
+            $options: 'i'
+        },
         chainId: chainId,
         tokenId: tokenId
     }

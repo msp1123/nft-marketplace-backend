@@ -1,3 +1,4 @@
+const {ethers} = require('ethers')
 const jwt = require('jsonwebtoken')
 const CONFIG = require('../configs/global.configs')
 
@@ -74,7 +75,16 @@ const waitFor = delay => new Promise(
     resolve => setTimeout(resolve, delay)
 )
 
+const getDecimalTokenId = function (id) {
+    if(id.substring(0, 2) != "0x"){
+        id = '0x' + id
+    }
+    let result = ethers.BigNumber.from(id);
+    return result.toString()
+}
+
 module.exports = {
+    getDecimalTokenId,
     signJWT,
     waitFor,
     isEmpty,

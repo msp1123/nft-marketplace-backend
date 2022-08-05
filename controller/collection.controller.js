@@ -15,7 +15,7 @@ const { isEmpty, isNull, ReE, ReS, ReF, to } = require('../services/utils.servic
 const { assetContract, marketContract } = require('../services/ethers.provider')
 
 //global constants
-const regexp = /^[a-zA-Z0-9-_]+$/;
+const regexp = /^[a-zA-Z0-9-_ ]+$/;
 
 exports.create = async function (req, res) {
 

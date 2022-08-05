@@ -8,7 +8,7 @@ const TokenLikesSchema = new mongoose.Schema({
         ref: 'Token',
         required: true
     },
-    userId: {
+    user: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
         required: true
