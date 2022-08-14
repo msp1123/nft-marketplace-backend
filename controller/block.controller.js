@@ -108,7 +108,3 @@ module.exports.getBlockIntervals = function (fromBlock, toBlock, intervalSize) {
     }
     return results
 }
-
-exports.supportedNetworks = function (req, res) {
-    return ReS(res, CONFIG.supportedNetworks)
-}

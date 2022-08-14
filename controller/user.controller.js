@@ -19,7 +19,7 @@ exports.login = async function (req, res, next) {
     let address = req.body.address
     let message = req.body.message
     let signature = req.body.signature
-    if (!signature) return ReF(res, "Address")
+    if (!address) return ReF(res, "Address")
     if (!message) return ReF(res, "Message")
     if (!signature) return ReF(res, "Signature")
     
@@ -49,9 +49,12 @@ exports.login = async function (req, res, next) {
     if (err) return ReE(res, {
         message: "Auth failed. please contact support"
     });
-    if (!user) return ReE(res, {
-        message: "User not found"
-    })
+    if (!user) {
+        [err, user] = await to(User.create({address: address}))
+        if (err) {
+            return ReE(res)
+        }
+    }
 
     if (user) {
         return ReS(res, {

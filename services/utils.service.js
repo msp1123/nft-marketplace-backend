@@ -83,8 +83,22 @@ const getDecimalTokenId = function (id) {
     return result.toString()
 }
 
+const supportedNetworks = function (req, res) {
+    return ReS(res, {
+        networks: CONFIG.supportedNetworks
+    })
+}
+
+const nftCategories = function (req, res) {
+    return ReS(res, {
+        categories: CONFIG.nftCategories
+    })
+}
+
 module.exports = {
     getDecimalTokenId,
+    supportedNetworks,
+    nftCategories,
     signJWT,
     waitFor,
     isEmpty,

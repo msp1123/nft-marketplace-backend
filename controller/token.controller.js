@@ -18,7 +18,7 @@ const {assetContract, marketContract} = require('../services/ethers.provider')
 exports.create = async function (req, res) {
     
     let user = req.user;
-    let name = req.body.name;
+    let name = req.body.name.trim();
     let creator = user.address;
     let image = req.body.image;
     let amount = req.body.amount;

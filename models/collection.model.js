@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate-v2')
+const CONFIG = require('../configs/global.configs')
 
 const CollectionSchema = new mongoose.Schema({
     active: {
@@ -20,7 +21,7 @@ const CollectionSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ["Collectibles", "Art", "Music", "Video"]
+        enum: CONFIG.nftCategories
     },
     name: {
         type: String,
