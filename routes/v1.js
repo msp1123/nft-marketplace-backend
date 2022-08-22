@@ -17,7 +17,9 @@ router.put('/user/update', needsAuth, UserController.updateUser)
 router.get('/user/verifyName/:id', needsAuth, UserController.verifyName)
 
 //token routes
+router.get('/token/fetchAll', TokenController.getAll)
 router.post('/token/create', needsAuth, TokenController.create)
+router.get('/token/fetchByUser/:address', TokenController.getUserTokens)
 router.get('/token/getTokenId/:chainId/:nftAddress', TokenController.getTokenId)
 router.get('/token/metadata/:chainId/:nftAddress/:tokenId', TokenController.getTokenMetadata)
 

@@ -1,14 +1,24 @@
 const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate-v2')
+const CONFIG = require('../configs/global.configs')
 
 const TokenSchema = new mongoose.Schema({
     active: {
         type: Boolean,
         default: true
     },
+    status: {
+        type: String,
+        enum: CONFIG.tokenStatus
+    },
     collectionName: {
         type: String,
         required: true
+    },
+    collectionId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Collection'
     },
     nftAddress: {
         type: String,
@@ -65,6 +75,12 @@ const TokenSchema = new mongoose.Schema({
     comments: {
         type: Number,
         default: 0
+    },
+    tokenPrice: {
+        type: Number
+    },
+    timestamp: {
+        type: Number
     },
     attributes: [
         {

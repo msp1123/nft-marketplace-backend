@@ -10,13 +10,13 @@ const {isAddress} = ethers.utils
 const {isEmail, isStrongPassword} = validator
 const ObjectId = require('mongoose').Types.ObjectId
 
-const {getDecimalTokenId, isEmpty, isNull, 
+const {getDecimalTokenId, isEmpty, isNull,
     ReE, ReS, ReF, to} = require('../services/utils.service')
-    const {User, Token, Activity, Collection} = require('../models')
+const {User, Token, Activity, Collection} = require('../models')
 const {assetContract, marketContract} = require('../services/ethers.provider')
 
 exports.create = async function (req, res) {
-    
+
     let user = req.user;
     let name = req.body.name.trim();
     let creator = user.address;
@@ -28,14 +28,14 @@ exports.create = async function (req, res) {
     let animation = req.body.animation_url;
     let description = req.body.description;
     let collectionName = req.body.collectionName;
-    
-    if(isNull(name)) return ReF(res, "Name")
-    if(isNull(image)) return ReF(res, "Image")
-    if(isNull(amount)) return ReF(res, "Quantity")
-    if(isNull(tokenId)) return ReF(res, "Token Id")
-    if(isNull(txHash)) return ReF(res, "Transaction Hash")
-    if(isNull(collectionName)) return ReF(res, "Collection Name")
-    
+
+    if (isNull(name)) return ReF(res, "Name")
+    if (isNull(image)) return ReF(res, "Image")
+    if (isNull(amount)) return ReF(res, "Quantity")
+    if (isNull(tokenId)) return ReF(res, "Token Id")
+    if (isNull(txHash)) return ReF(res, "Transaction Hash")
+    if (isNull(collectionName)) return ReF(res, "Collection Name")
+
     let collectionQuery = {
         active: true,
         name: collectionName
@@ -43,16 +43,16 @@ exports.create = async function (req, res) {
 
     let err, collection;
     [err, collection] = await to(Collection.findOne(collectionQuery));
-    if(err) return ReE(res)
-    
-    if(!collection) return ReE(res, {
+    if (err) return ReE(res)
+
+    if (!collection) return ReE(res, {
         message: "Collection not found"
     })
 
-    if(collection.owner !== user.address) return ReE(res, {
+    if (collection.owner !== user.address) return ReE(res, {
         message: "You are not owner of this collection"
     })
-    
+
     let tokenQuery = {
         tokenId: tokenId,
         chainId: collection.chainId,
@@ -61,15 +61,16 @@ exports.create = async function (req, res) {
 
     let token;
     [err, token] = await to(Token.findOne(tokenQuery));
-    if(err) return ReE(res)
-    
-    if(token) return ReE(res, {
+    if (err) return ReE(res)
+
+    if (token) return ReE(res, {
         message: "Token already available in market"
     })
-    
+
     let tokenInput = {
         collectionName: collectionName,
         nftAddress: collection.address,
+        collectionId: collection._id,
         chainId: collection.chainId,
         description: description,
         animation_url: animation,
@@ -81,30 +82,31 @@ exports.create = async function (req, res) {
         image: image,
         name: name,
     };
-    
+
     [err, token] = await to(Token.create(tokenInput));
-    if(err) return ReE(res)
-    
+    if (err) return ReE(res)
+
     return ReS(res, {
-        message: "Token created successfully"
+        message: "Token created successfully",
+        token: token
     })
 }
 
 exports.getTokenMetadata = async function (req, res) {
-    
+
     let chainId = req.params.chainId;
     let tokenId = req.params.tokenId;
     let nftAddress = req.params.nftAddress;
-    
-    if(isNull(chainId)) return ReF(res, "Chain Id")
-    if(isNull(tokenId)) return ReF(res, "Token Id")
-    if(isNull(nftAddress)) return ReF(res, "NFT Address")
-    if(!isAddress(nftAddress)) return ReF(res, "Valid NFT Address")
-    
-    if(tokenId.length > 20){
+
+    if (isNull(chainId)) return ReF(res, "Chain Id")
+    if (isNull(tokenId)) return ReF(res, "Token Id")
+    if (isNull(nftAddress)) return ReF(res, "NFT Address")
+    if (!isAddress(nftAddress)) return ReF(res, "Valid NFT Address")
+
+    if (tokenId.length > 20) {
         tokenId = getDecimalTokenId(tokenId)
     }
-    
+
     let query = {
         nftAddress: {
             '$regex': `^${nftAddress}$`,
@@ -113,17 +115,17 @@ exports.getTokenMetadata = async function (req, res) {
         chainId: chainId,
         tokenId: tokenId
     }
-    
+
     let err, token;
     [err, token] = await to(Token.findOne(query));
-    if(err) return ReE(res)
-    
-    if(!token){
+    if (err) return ReE(res)
+
+    if (!token) {
         return ReE(res, {
             message: "Token not found"
         }, HttpStatus.NOT_FOUND)
     }
-    
+
     let tokenModel = {
         name: token.name,
         image: token.image,
@@ -133,45 +135,148 @@ exports.getTokenMetadata = async function (req, res) {
         external_url: token.external_url,
         animation_url: token.animation_url,
     };
-    
+
     return ReS(res, tokenModel)
 }
 
-exports.getTokenId = async function (req, res) {
+exports.get = async function (req, res) {
+
+    let chainId = req.params.chainId;
+    let tokenId = req.params.tokenId;
+    let nftAddress = req.params.nftAddress;
+
+    let query = {
+        active: true,
+        chainId: chainId,
+        tokenId: tokenId,
+        nftAddress: nftAddress
+    }
+
+    let err, token;
+    [err, token] = await to(Token.findOne(query));
+    if (err) return ReE(res)
+
+    if (!token) return ReE(res, {
+        message: "Token not found"
+    })
     
+    return ReS(res, {
+        token: token
+    })
+}
+
+exports.getAll = async function (req, res) {
+
+    let page = req.query.page || 1;
+    let limit = req.query.limit || 30;
+    let address = req.query.address || null;
+
+    let query = {
+        active: true
+    }
+
+    let options = {
+        limit: limit,
+        page: page,
+        populate: [{
+            path: 'collectionId'
+        }]
+    }
+
+    let err, tokens;
+    [err, tokens] = await to(Token.paginate(query, options));
+    if (err) { console.log(err); return ReE(res)}
+
+    if (isEmpty(tokens)) return ReS(res, {
+        message: "No Token available"
+    })
+
+    Object.defineProperty(tokens, 'tokens',
+        Object.getOwnPropertyDescriptor(tokens, 'docs'));
+    delete tokens['docs'];
+    return ReS(res, tokens)
+}
+
+exports.getUserTokens = async function (req, res) {
+
+    let address = req.params.address;
+    let page = req.query.page || 1;
+    let limit = req.query.limit || 10;
+
+    if (isNull(address)) return ReF(res, "Address")
+
+    let userQuery = {
+        active: true,
+        address: address
+    }
+
+    let err, user;
+    [err, user] = await to(User.findOne(userQuery))
+    if (err) return ReE(res)
+
+    if (!user) return ReE(res, {
+        message: "User not found"
+    })
+
+    let query = {
+        active: true,
+        owner: user.address
+    }
+
+    let options = {
+        limit: limit,
+        page: page
+    }
+
+    let tokens;
+    [err, tokens] = await to(Token.paginate(query, options));
+    if (err) return ReE(res)
+
+    if (isEmpty(tokens.docs)) return ReE(res, {
+        message: "No Tokens available"
+    })
+
+    Object.defineProperty(tokens, 'tokens',
+        Object.getOwnPropertyDescriptor(tokens, 'docs'));
+    delete tokens['docs'];
+    return ReS(res, tokens)
+}
+
+exports.getTokenId = async function (req, res) {
+
     let chainId = req.params.chainId;
     let nftAddress = req.params.nftAddress;
-    
-    if(isNull(chainId)) return ReF(res, "Chain Id")
-    if(isNull(nftAddress)) return ReF(res, "NFT Address")
-    if(!isAddress(nftAddress)) return ReF(res, "Valid NFT Address")
-    
+
+    if (isNull(chainId)) return ReF(res, "Chain Id")
+    if (isNull(nftAddress)) return ReF(res, "NFT Address")
+    if (!isAddress(nftAddress)) return ReF(res, "Valid NFT Address")
+
     let tokenId = Math.floor(1000000000 + Math.random() * 9000000000);
-    while(tokenId.toString().length != 10){
+    while (tokenId.toString().length != 10) {
         tokenId = Math.floor(1000000000 + Math.random() * 9000000000);
     }
-    
+
     let query = {
         nftAddress: nftAddress,
         chainId: chainId,
         tokenId: tokenId
     }
-    
+
     let err, token;
     [err, token] = await to(Token.findOne(query));
-    if(err) return ReE(res)
-    
-    while(token){
+    if (err) return ReE(res)
+
+    while (token) {
         tokenId = Math.floor(1000000000 + Math.random() * 9000000000);
         query.tokenId = tokenId;
-        while(tokenId.toString().length != 10){
+        while (tokenId.toString().length != 10) {
             tokenId = Math.floor(1000000000 + Math.random() * 9000000000);
             query.tokenId = tokenId;
         }
         [err, token] = await to(Token.findOne(query));
-        if(err) return ReE(res)
+        if (err) return ReE(res)
     }
-    
+
     return ReS(res, {
         tokenId: tokenId
     })
@@ -317,9 +422,9 @@ exports.bought = async function (
 
     [err, activity] = await to(Activity.findOne(activityQuery));
     if (err) throw err
-    
-    if(!activity) throw new Error(`#Buy consumer: Activity not found ${JSON.stringify(activityQuery)}`)
-    
+
+    if (!activity) throw new Error(`#Buy consumer: Activity not found ${JSON.stringify(activityQuery)}`)
+
     activity.status = 'Sold';
     [err, activity] = await to(activity.save())
     if (err) throw err
