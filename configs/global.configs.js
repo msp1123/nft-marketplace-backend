@@ -17,6 +17,9 @@ CONFIG.start_listener = process.env.START_LISTENER || 'false'
 CONFIG.sync_interval_mins = process.env.SYNC_INTERVAL_MINS || '30'
 CONFIG.sync_market_events = process.env.SYNC_MARKET_EVENTS || 'false'
 
+CONFIG.event_sync_for = [4, 80001]
+CONFIG.event_listeners_for = [4, 80001]
+
 CONFIG.jwt_expiration = process.env.JWT_EXPIRATION || '86400';
 CONFIG.jwt_encryption = process.env.JWT_ENCRYPTION || 'jwt_encryption'
 
@@ -38,7 +41,7 @@ CONFIG.editableCollectionFields = ['name', 'description', 'image', 'category', '
 CONFIG.defaultImage = "https://nft-market.s3.us-west-1.amazonaws.com/contract/nft-main.png"
 
 CONFIG.supportedNetworks = [
-    { 
+    {
         chainId: 4,
         network: 'rinkeby',
         displayName: "Rinkeby",

@@ -35,7 +35,7 @@ const insertToQueue = async function (txHash){
 }
 
 exports.pushMintEvent = async (
-    nftAddress, tokenId, amount, owner, txHash, chainId) => {
+    nftAddress, tokenId, amount, owner, txHash, chainId, timestamp) => {
 
     let event = {
         nftAddress: nftAddress,
@@ -43,7 +43,8 @@ exports.pushMintEvent = async (
         amount: parseInt(amount),
         owner: owner,
         txHash: txHash,
-        chainId: chainId
+        chainId: chainId,
+        timestamp: timestamp
     }
     
     let channel = await QueueService.mintEventChannel;
@@ -61,7 +62,7 @@ exports.pushMintEvent = async (
 }
 
 exports.pushListedEvent = async (
-    standard, nftAddress, tokenId, itemId, amount, price, owner, txHash, chainId) => {
+    standard, nftAddress, tokenId, itemId, amount, price, owner, txHash, chainId, timestamp) => {
 
     let event = {
         standard: parseInt(standard),
@@ -72,7 +73,8 @@ exports.pushListedEvent = async (
         price: parseFloat(price),
         owner: owner,
         txHash: txHash,
-        chainId: chainId
+        chainId: chainId,
+        timestamp: timestamp
     }
     
     let channel = await QueueService.listEventChannel;
@@ -89,7 +91,7 @@ exports.pushListedEvent = async (
 }
 
 exports.pushBoughtEvent = async (
-    standard, nftAddress, tokenId, itemId, amount, price, owner, txHash, chainId) => {
+    standard, nftAddress, tokenId, itemId, amount, price, owner, txHash, chainId, timestamp) => {
 
     let event = {
         standard: parseInt(standard),
@@ -100,7 +102,8 @@ exports.pushBoughtEvent = async (
         price: parseFloat(price),
         owner: owner,
         txHash: txHash,
-        chainId: chainId
+        chainId: chainId,
+        timestamp: timestamp
     }
     
     let channel = await QueueService.buyEventChannel;

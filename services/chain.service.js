@@ -17,23 +17,25 @@ const Network = require('./ethers.provider')
 
 for (const key in Network.getSigners) {
     if (Object.hasOwnProperty.call(Network.getSigners, key)) {
+        
         const signer = Network.getSigners[key];
         
         const startListener = async function () {
             signer.market.on('TokenMinted',
-                (nftAddress, tokenId, amount, owner, event) => {
+                async (nftAddress, tokenId, amount, owner, event) => {
                     pushMintEvent(
                         nftAddress,
                         tokenId,
                         amount,
                         owner,
                         event.transactionHash,
-                        parseInt(key)
+                        parseInt(key),
+                        (await signer.provider.getBlock(event.blockNumber)).timestamp
                     )
                 }
             );
             signer.market.on('TokenListed',
-                (standard, nftAddress, tokenId, itemId, amount, price, owner, event) => {
+                async (standard, nftAddress, tokenId, itemId, amount, price, owner, event) => {
                     pushListedEvent(
                         standard,
                         nftAddress,
@@ -43,12 +45,13 @@ for (const key in Network.getSigners) {
                         price,
                         owner,
                         event.transactionHash,
-                        parseInt(key)
+                        parseInt(key),
+                        (await signer.provider.getBlock(event.blockNumber)).timestamp
                     )
                 }
             );
             signer.market.on('TokenBought',
-                (standard, nftAddress, tokenId, itemId, amount, price, owner, event) => {
+                async (standard, nftAddress, tokenId, itemId, amount, price, owner, event) => {
                     pushBoughtEvent(
                         standard,
                         nftAddress,
@@ -58,7 +61,8 @@ for (const key in Network.getSigners) {
                         price,
                         owner,
                         event.transactionHash,
-                        parseInt(key)
+                        parseInt(key),
+                        (await signer.provider.getBlock(event.blockNumber)).timestamp
                     )
                 }
             );
@@ -86,7 +90,7 @@ for (const key in Network.getSigners) {
                     mintEvents = await signer.market.queryFilter(
                         'TokenMinted', fromBlock, toBlock
                     )
-                    mintEvents.map(event => {
+                    mintEvents.map(async event => {
                         const {nftAddress, tokenId, amount, owner} = event.args
                         pushMintEvent(
                             nftAddress,
@@ -94,14 +98,15 @@ for (const key in Network.getSigners) {
                             amount,
                             owner,
                             event.transactionHash,
-                            parseInt(key)
+                            parseInt(key),
+                            (await signer.provider.getBlock(event.blockNumber)).timestamp
                         )
                     })
                     
                     listedEvents = await signer.market.queryFilter(
                         'TokenListed', fromBlock, toBlock
                     )
-                    listedEvents.map(event => {
+                    listedEvents.map(async event => {
                         const {standard, nftAddress, tokenId, itemId, amount, owner, price} = event.args
                         pushListedEvent(
                             standard,
@@ -112,14 +117,15 @@ for (const key in Network.getSigners) {
                             price,
                             owner,
                             event.transactionHash,
-                            parseInt(key)
+                            parseInt(key),
+                            (await signer.provider.getBlock(event.blockNumber)).timestamp
                         )
                     })
                     
                     boughtEvents = await signer.market.queryFilter(
                         'TokenBought', fromBlock, toBlock
                     )
-                    boughtEvents.map(event => {
+                    boughtEvents.map(async event => {
                         const {standard, nftAddress, tokenId, itemId, amount, price, owner} = event.args
                         pushBoughtEvent(
                             standard,
@@ -130,7 +136,8 @@ for (const key in Network.getSigners) {
                             price,
                             owner,
                             event.transactionHash,
-                            parseInt(key)
+                            parseInt(key),
+                            (await signer.provider.getBlock(event.blockNumber)).timestamp
                         )
                     })
                 } catch (e) {
@@ -144,11 +151,11 @@ for (const key in Network.getSigners) {
             logger.info(`#Filter event ${signer.network}: Total events: ${totalEvents}, from: ${fromBlock}, to: ${currentBlock})`)
         }
 
-        if (CONFIG.start_listener === 'true') {
+        if (CONFIG.start_listener === 'true' && CONFIG.event_listeners_for.find(n => n === Number(key))) {
             console.log(`Events listener started #${signer.network}`);
             startListener()
         }
-        if (CONFIG.sync_market_events === 'true') {
+        if (CONFIG.sync_market_events === 'true' && CONFIG.event_sync_for.find(n => n === Number(key))) {
             filterEvents()
         }
     }
