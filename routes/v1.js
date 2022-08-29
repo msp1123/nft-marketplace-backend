@@ -26,6 +26,7 @@ router.get('/token/metadata/:chainId/:nftAddress/:tokenId', TokenController.getT
 //collection routes
 router.get('/collection/fetch/:name', CollectionController.get)
 router.get('/collection/fetchAll', CollectionController.getAll)
+router.get('/collection/verifyUrl', CollectionController.verifyUrl)
 router.get('/collection/verifyName', CollectionController.verifyName)
 router.put('/collection/update', needsAuth, CollectionController.update)
 router.post('/collection/create', needsAuth, CollectionController.create)

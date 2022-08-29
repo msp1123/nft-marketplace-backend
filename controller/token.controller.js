@@ -20,21 +20,23 @@ exports.create = async function (req, res) {
     let user = req.user;
     let name = req.body.name.trim();
     let creator = user.address;
-    let image = req.body.image;
     let amount = req.body.amount;
     let txHash = req.body.txHash;
     let tokenId = req.body.tokenId;
     let royalty = req.body.royalty || 0;
-    let animation = req.body.animation_url;
+    let attachments = req.body.attachments;
     let description = req.body.description;
     let collectionName = req.body.collectionName;
 
     if (isNull(name)) return ReF(res, "Name")
-    if (isNull(image)) return ReF(res, "Image")
     if (isNull(amount)) return ReF(res, "Quantity")
     if (isNull(tokenId)) return ReF(res, "Token Id")
     if (isNull(txHash)) return ReF(res, "Transaction Hash")
+    if (isEmpty(attachments)) return ReF(res, "Attachments")
     if (isNull(collectionName)) return ReF(res, "Collection Name")
+    
+    let previewImage = attachments.find(a => a.fileType === "Image")
+    if(!previewImage) return ReF(res, "Image")
 
     let collectionQuery = {
         active: true,
@@ -70,17 +72,17 @@ exports.create = async function (req, res) {
     let tokenInput = {
         collectionName: collectionName,
         nftAddress: collection.address,
+        previewImage: previewImage.url,
         collectionId: collection._id,
         chainId: collection.chainId,
         description: description,
-        animation_url: animation,
+        attachments: attachments,
         tokenId: tokenId,
         creator: creator,
         royalty: royalty,
         txHash: txHash,
         amount: amount,
-        image: image,
-        name: name,
+        name: name
     };
 
     [err, token] = await to(Token.create(tokenInput));
@@ -125,15 +127,17 @@ exports.getTokenMetadata = async function (req, res) {
             message: "Token not found"
         }, HttpStatus.NOT_FOUND)
     }
+    
+    let animation = token.attachments.find(a => a.fileType === "Video")
 
     let tokenModel = {
         name: token.name,
-        image: token.image,
+        image: token.previewImage,
         tokenId: token.tokenId,
         attributes: token.attributes,
         description: token.description,
-        external_url: token.external_url,
-        animation_url: token.animation_url,
+        external_url: token.externalUrl,
+        animation_url: animation.url
     };
 
     return ReS(res, tokenModel)

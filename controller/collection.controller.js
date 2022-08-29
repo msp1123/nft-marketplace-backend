@@ -15,38 +15,51 @@ const {isEmpty, isNull, ReE, ReS, ReF, to} = require('../services/utils.service'
 const {assetContract, marketContract} = require('../services/ethers.provider')
 
 //global constants
-const minimumChars = 4;
-const regexp = /^[a-zA-Z0-9-_ ]+$/;
+const minimumChars = 3;
+const regexpUrl = /^[a-z0-9-]+$/;
+const regexpName = /^[a-zA-Z0-9- ]+$/;
 
 exports.create = async function (req, res) {
 
     let user = req.user;
-    let name = req.body.name.trim();
     let owner = user.address;
-    let image = req.body.image;
     let chainId = req.body.chainId;
     let address = req.body.address;
+    let url = req.body.url.trim();
+    let name = req.body.name.trim();
     let description = req.body.description;
+    let profileImage = req.body.profileImage;
 
+    if (isNull(url)) return ReF(res, "Url")
     if (isNull(name)) return ReF(res, "Name")
-    if (isNull(image)) return ReF(res, "Image")
-    if (isNull(chainId)) return ReF(res, "Chain Id")
     if (isNull(address)) return ReF(res, "Address")
+    if (isNull(chainId)) return ReF(res, "Chain Id")
     if (!isAddress(address)) return ReF(res, "Valid Address")
+    if (isNull(profileImage)) return ReF(res, "Profile Image")
 
     let find = CONFIG.supportedNetworks.find(id => id.chainId == chainId)
     if (!find) return ReE(res, {
         message: "Network not supported"
     })
 
-    if (name.search(regexp) === -1) {
+    if (name.search(regexpName) === -1) {
         return ReE(res, {
             message: "Invalid name format"
+        })
+    }
+    
+    if (url.search(regexpUrl) === -1) {
+        return ReE(res, {
+            message: "Invalid url format"
         })
     }
 
     if (name.length < minimumChars) return ReE(res, {
         message: "Name is too short"
+    })
+    
+    if (url.length < minimumChars) return ReE(res, {
+        message: "Url is too short"
     })
 
     let err, collection;
@@ -57,15 +70,26 @@ exports.create = async function (req, res) {
     if (collection) return ReE(res, {
         message: "Collection name already taken"
     })
+    
+    [err, collection] = await to(Collection.findOne({url: url})
+        .collation({locale: 'en', strength: 2}));
+    if (err) return ReE(res)
+
+    if (collection) return ReE(res, {
+        message: "Collection url already taken"
+    })
 
     let collectionInput = {
+        url: url,
         name: name,
-        image: image,
+        owner: owner,
         address: address,
         chainId: chainId,
-        owner: owner,
+        links: req.body.links,
         description: description,
-        category: req.body.category
+        profileImage: profileImage,
+        category: req.body.category,
+        bannerImage: req.body.bannerImage
     };
 
     [err, collection] = await to(Collection.create(collectionInput));
@@ -79,11 +103,11 @@ exports.create = async function (req, res) {
 
 exports.get = async function (req, res) {
 
-    let name = req.params.name;
+    let url = req.params.url;
 
     let query = {
         active: true,
-        name: name
+        url: url
     }
 
     let err, collection;
@@ -124,11 +148,11 @@ exports.update = async function (req, res) {
         message: "No input found to update"
     })
 
-    if (isNull(body.name)) return ReF(res, "Collection name")
+    if (isNull(body.url)) return ReF(res, "Collection url")
 
     let query = {
         active: true,
-        name: body.name
+        url: body.url
     }
 
     let err, collection;
@@ -265,7 +289,7 @@ exports.verifyName = async function (req, res) {
         message: "Name is too short"
     }, 200)
 
-    if (name.search(regexp) === -1) {
+    if (name.search(regexpName) === -1) {
         return ReE(res, {
             message: "Invalid name format"
         })
@@ -283,5 +307,35 @@ exports.verifyName = async function (req, res) {
     return ReS(res, {
         message: "Name is available",
         name: name
+    })
+}
+
+exports.verifyUrl = async function (req, res) {
+    let url = req.query.url.trim();
+
+    if (isNull(url)) return ReF(res, "Url")
+
+    if (url.length < minimumChars) return ReE(res, {
+        message: "Url is too short"
+    }, 200)
+
+    if (url.search(regexpUrl) === -1) {
+        return ReE(res, {
+            message: "Invalid url format"
+        })
+    }
+
+    let err, collection;
+    [err, collection] = await to(Collection.findOne({url: url})
+        .collation({locale: 'en', strength: 2}));
+    if (err) return ReE(res)
+
+    if (collection) return ReE(res, {
+        message: "Collection url already taken"
+    }, 200)
+
+    return ReS(res, {
+        message: "Url is available",
+        url: url
     })
 }

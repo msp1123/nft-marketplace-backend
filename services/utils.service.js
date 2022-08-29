@@ -18,6 +18,17 @@ function isNull(field) {
     return typeof field === 'undefined' || field === '' || field === null
 }
 
+function generateTokenId(length) {
+    var result = '';
+    var characters = '0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+            charactersLength));
+    }
+    return result;
+}
+
 // This function is used to handle the prmoises
 async function to(promise) {
     return await
@@ -76,7 +87,7 @@ const waitFor = delay => new Promise(
 )
 
 const getDecimalTokenId = function (id) {
-    if(id.substring(0, 2) != "0x"){
+    if (id.substring(0, 2) != "0x") {
         id = '0x' + id
     }
     let result = ethers.BigNumber.from(id);

@@ -28,19 +28,32 @@ const CollectionSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    url: {
+        type: String,
+        required: true,
+        unique: true
+    },
     description: {
         type: String
     },
-    image: {
+    profileImage: {
         type: String,
         required: true
     },
-    external_url: {
+    bannerImage: {
         type: String
     },
-    fee_recipient: {
-        type: String
-    },
+    links: [
+        {
+            type: {
+                type: String,
+                enum: ["Website", "Instagram", "Discord", "Twitter"]
+            },
+            handle: {
+                type: String
+            }
+        }
+    ]
 }, {timestamps: true})
 
 CollectionSchema.plugin(mongoosePaginate)

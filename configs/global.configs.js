@@ -33,16 +33,17 @@ CONFIG.mintedQueueName = 'incoming-minted-events'
 CONFIG.listedQueueName = 'incoming-listed-events'
 CONFIG.boughtQueueName = 'incoming-bought-events'
 
-CONFIG.userPopulatable = '_id address imageUrl name bio followers followings popularity social'
+CONFIG.userPopulatable = 'address imageUrl name bio followers followings popularity social'
 CONFIG.nftCategories = ['Art', 'Collectibles', 'Photography', 'Music', 'Video']
 CONFIG.tokenStatus = ['Listed', 'Sold', 'Minted', 'Burned']
 CONFIG.editableUserFields = ['name', 'imageUrl', 'bio', 'social']
-CONFIG.editableCollectionFields = ['name', 'description', 'image', 'category', 'external_url']
+CONFIG.editableCollectionFields = ['name', 'description', 'profileImage', 'bannerImage', 'category', 'links']
 CONFIG.defaultImage = "https://nft-market.s3.us-west-1.amazonaws.com/contract/nft-main.png"
 
 CONFIG.supportedNetworks = [
     {
         chainId: 4,
+        currency: "RETH",
         network: 'rinkeby',
         displayName: "Rinkeby",
         explorerUrl: "https://rinkeby.etherscan.io",
@@ -53,6 +54,7 @@ CONFIG.supportedNetworks = [
     },
     {
         chainId: 80001,
+        currency: "MATIC",
         network: 'mumbai',
         displayName: "Mumbai",
         explorerUrl: "https://mumbai.polygonscan.com",

@@ -51,23 +51,17 @@ const TokenSchema = new mongoose.Schema({
     description: {
         type: String
     },
-    image: {
+    previewImage: {
         type: String,
         required: true
     },
-    animation_url: {
-        type: String
-    },
-    external_url: {
+    externalUrl: {
         type: String
     },
     txHash: {
         type: String,
         unique: true
     },
-    notifications: [{
-        type: String
-    }],
     likes: {
         type: Number,
         default: 0
@@ -82,6 +76,23 @@ const TokenSchema = new mongoose.Schema({
     timestamp: {
         type: Number
     },
+    attachments: [
+        {
+            fileType: {
+                type: String,
+                enum: ["Image", "Video", "Audio", "Mp3"]
+            },
+            url: {
+                type: String
+            },
+            height: {
+                type: Number
+            },
+            width: {
+                type: Number
+            }
+        }
+    ],
     attributes: [
         {
             trait_type: {
