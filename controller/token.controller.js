@@ -32,8 +32,8 @@ exports.create = async function (req, res) {
     if (isNull(amount)) return ReF(res, "Quantity")
     if (isNull(tokenId)) return ReF(res, "Token Id")
     if (isNull(txHash)) return ReF(res, "Transaction Hash")
-    if (isEmpty(attachments)) return ReF(res, "Attachments")
     if (isNull(collectionName)) return ReF(res, "Collection Name")
+    if (isNull(attachments) || isEmpty(attachments)) return ReF(res, "Attachments")
     
     let previewImage = attachments.find(a => a.fileType === "Image")
     if(!previewImage) return ReF(res, "Image")
